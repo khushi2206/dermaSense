@@ -1,0 +1,111 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@600;700;800&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Myntra-like: crisp white canvas + strong contrast */
+    --background: 0 0% 100%;
+    --foreground: 240 10% 12%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 12%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 12%;
+
+    /* Myntra-ish accent pink */
+    --primary: 346 100% 62%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 240 8% 96%;
+    --secondary-foreground: 240 10% 18%;
+
+    --muted: 240 8% 95%;
+    --muted-foreground: 240 6% 44%;
+
+    --accent: 346 100% 95%;
+    --accent-foreground: 240 10% 12%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 240 8% 90%;
+    --input: 240 8% 90%;
+    --ring: 346 100% 62%;
+
+    --radius: 0.75rem;
+
+    --gradient-primary: linear-gradient(135deg, hsl(346 100% 62%), hsl(18 100% 62%));
+    /* Premium cosmetics backdrop (soft tints, Myntra-ish) */
+    --gradient-hero: radial-gradient(900px 420px at 12% 0%, hsl(346 100% 97%) 0%, transparent 62%),
+      radial-gradient(900px 420px at 90% 10%, hsl(18 100% 97%) 0%, transparent 60%),
+      linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(0 0% 100%) 55%, hsl(240 8% 98%) 100%);
+    --gradient-accent: linear-gradient(135deg, hsl(346 100% 95%), hsl(0 0% 100%));
+
+    /* Calmer shadows */
+    --shadow-card: 0 10px 28px -18px hsl(240 10% 12% / 0.12);
+    --shadow-elevated: 0 18px 50px -22px hsl(240 10% 12% / 0.16);
+
+    --font-display: "Outfit", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    --font-body: "Inter", sans-serif;
+
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-body);
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+  }
+}
+
+@layer components {
+  .glass-card {
+    @apply bg-card border border-border rounded-xl;
+    box-shadow: var(--shadow-card);
+  }
+
+  .glass-nav {
+    @apply bg-card border-b border-border;
+  }
+
+  .gradient-text {
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .gradient-bg {
+    background: var(--gradient-hero);
+  }
+
+  .btn-gradient {
+    background: var(--gradient-primary);
+    @apply text-primary-foreground font-semibold rounded-md px-6 py-3 transition-transform hover:scale-[1.01] active:scale-[0.99];
+    box-shadow: var(--shadow-elevated);
+  }
+
+  .btn-gradient:hover {
+    filter: brightness(0.98);
+  }
+}
