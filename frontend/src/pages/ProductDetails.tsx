@@ -2,21 +2,14 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useParams, Link } from "react-router-dom";
 import { ArrowLeft, ShoppingBag, ShieldCheck, Leaf, RefreshCw } from "lucide-react";
-
-const PRODUCTS: Record<number, { name: string; category: string; price: number; image: string; description: string; ingredients: string; benefits: string[] }> = {
-  1: { name: "Hyaluronic Serum",     category: "Skincare", price: 45, image: "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=1200&q=80", description: "A high-potency restorative serum engineered with triple-weight hyaluronic molecules for multi-depth cellular hydration and architectural skin support.", ingredients: "Sodium Hyaluronate (3 molecular weights), Ceramide NP, Panthenol, Niacinamide", benefits: ["Deep multi-layer hydration", "Plumps fine lines", "Strengthens skin barrier", "Suitable for all skin types"] },
-  2: { name: "Vitamin C Complex",    category: "Skincare", price: 65, image: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=1200&q=80", description: "Bio-available 20% Vitamin C complex combined with ferulic acid and vitamin E for visible brightening and oxidative stress protection.", ingredients: "L-Ascorbic Acid 20%, Ferulic Acid, Tocopherol, Rosa Canina Extract", benefits: ["Visibly reduces dark spots", "Boosts collagen synthesis", "Antioxidant protection", "Evens skin tone"] },
-  3: { name: "Matte Foundation",     category: "Makeup",   price: 52, image: "https://images.unsplash.com/photo-1596704017254-9b121068f044?auto=format&fit=crop&w=1200&q=80", description: "Skin-matching foundation with invisible coverage and a breathable, second-skin matte finish that lasts all day.", ingredients: "Aqua, Cyclopentasiloxane, SPF 15, Kaolin, Hyaluronic Acid", benefits: ["All-day wear", "Breathable formula", "SPF 15 protection", "20 shades available"] },
-  4: { name: "Body Oil Tint",        category: "Bodycare", price: 38, image: "https://images.unsplash.com/photo-1608248597279-f99d160bfcbc?auto=format&fit=crop&w=1200&q=80", description: "A sheer, luminous body oil with a soft tint that hydrates, nourishes and imparts structural luster.", ingredients: "Argan Oil, Jojoba Esters, Iron Oxides, Vitamin E, Rosehip Seed Oil", benefits: ["24h hydration", "Natural luminance", "Non-greasy absorption", "Vegan formula"] },
-  5: { name: "Niacinamide Toner",    category: "Skincare", price: 34, image: "https://images.unsplash.com/photo-1601049676869-702ea24cfd58?auto=format&fit=crop&w=1200&q=80", description: "10% Niacinamide concentration for visible pore refinement, sebum regulation and skin barrier restoration.", ingredients: "Niacinamide 10%, Zinc PCA, Hyaluronic Acid, Allantoin", benefits: ["Minimises pore appearance", "Controls excess sebum", "Evens skin texture", "Brightens complexion"] },
-  6: { name: "Satin Lip Treatment",  category: "Makeup",   price: 22, image: "https://images.unsplash.com/photo-1631730486134-c99a59e2ebea?auto=format&fit=crop&w=1200&q=80", description: "Tinted moisture with a satin finish that conditions, plumps and defines lips throughout the day.", ingredients: "Shea Butter, Vitamin E, Rosehip Oil, Natural Pigments, Hyaluronic Acid", benefits: ["Plumping effect", "12h moisture", "8 natural shades", "Cruelty-free"] },
-  7: { name: "Peptide Eye Cream",    category: "Skincare", price: 72, image: "https://images.unsplash.com/photo-1556228453-efd6c1ff04f6?auto=format&fit=crop&w=1200&q=80", description: "Multi-peptide complex targeting fine lines, dark circles and puffiness in the delicate periorbital zone.", ingredients: "Argireline, Leuphasyl, Caffeine, Vitamin K, Hyaluronic Acid", benefits: ["Reduces crow's feet", "Diminishes dark circles", "Depuffs eye area", "Clinically tested"] },
-  8: { name: "Rose Facial Mist",     category: "Skincare", price: 28, image: "https://images.unsplash.com/photo-1607748851687-ba9a10438621?auto=format&fit=crop&w=1200&q=80", description: "Antioxidant thermal mist with pure rose water for instant hydration and skin-setting throughout the day.", ingredients: "Rosa Damascena Water, Glycerin, Aloe Vera, Panthenol, Centella Extract", benefits: ["Instant skin reset", "Sets makeup", "Antioxidant boost", "Travel-friendly 100ml"] },
-};
+import { PRODUCTS } from "@/lib/catalog";
+import { addToCart } from "@/lib/session";
+import { useState } from "react";
 
 const ProductDetails = () => {
   const { id } = useParams();
-  const product = PRODUCTS[Number(id)];
+  const product = PRODUCTS.find((item) => item.id === Number(id));
+  const [added, setAdded] = useState(false);
 
   if (!product) {
     return (
@@ -79,8 +72,16 @@ const ProductDetails = () => {
               </div>
 
               {/* Add to bag */}
-              <button className="w-full flex items-center justify-center gap-3 bg-primary text-primary-foreground py-5 font-body text-[11px] font-medium uppercase tracking-[0.2em] hover:bg-primary/90 transition-all">
-                <ShoppingBag className="h-4 w-4" /> Add to Bag
+              <button
+                onClick={() => {
+                  addToCart(product);
+                  window.dispatchEvent(new Event("cart-updated"));
+                  setAdded(true);
+                  window.setTimeout(() => setAdded(false), 1000);
+                }}
+                className="w-full flex items-center justify-center gap-3 bg-primary text-primary-foreground py-5 font-body text-[11px] font-medium uppercase tracking-[0.2em] hover:bg-primary/90 transition-all"
+              >
+                <ShoppingBag className="h-4 w-4" /> {added ? "Added to Bag" : "Add to Bag"}
               </button>
 
               {/* Ingredients */}

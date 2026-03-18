@@ -2,8 +2,15 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useState } from "react";
 import { api } from "@/lib/api";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Sparkles } from "lucide-react";
+import { getNextLocalId, setCurrentUser } from "@/lib/session";
+
+interface CreatedUser {
+  id: number;
+  fullName: string;
+  email: string;
+}
 
 const Auth = () => {
   const [email, setEmail]       = useState("");
@@ -17,11 +24,15 @@ const Auth = () => {
     setError("");
     setLoading(true);
     try {
-      await api.post("/users", { email, fullName });
+      const created = await api.post<CreatedUser, { email: string; fullName: string }>("/users", { email, fullName });
+      setCurrentUser({ id: created.id, email: created.email, fullName: created.fullName });
       navigate("/profile");
     } catch (err) {
-      setError("Could not connect to the server. Please try again.");
+      const localId = getNextLocalId("user");
+      setCurrentUser({ id: localId, fullName, email });
+      setError("Backend unavailable. You are in local mode and your profile is saved on this device.");
       console.error(err);
+      navigate("/profile");
     }
     setLoading(false);
   };
@@ -82,7 +93,7 @@ const Auth = () => {
 
             <p className="text-center font-body text-xs text-muted-foreground mt-8">
               Already have an account?{" "}
-              <span className="underline underline-offset-4 cursor-pointer hover:text-foreground">Sign in</span>
+              <Link to="/login" className="underline underline-offset-4 hover:text-foreground">Sign in</Link>
             </p>
           </div>
 

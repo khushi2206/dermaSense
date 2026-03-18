@@ -1,12 +1,11 @@
 import { Link, useLocation } from "react-router-dom";
-import { Search, ShoppingBag, User, Menu, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { useState } from "react";
 
 const navItems = [
-  { label: "Shop",        path: "/products"      },
-  { label: "Routine",     path: "/routine"       },
-  { label: "AI Analysis", path: "/skin-analysis" },
-  { label: "Account",     path: "/auth"          },
+  { label: "Home",     path: "/" },
+  { label: "Products", path: "/products" },
+  { label: "Profile",  path: "/profile" },
 ];
 
 const Navbar = () => {
@@ -35,26 +34,19 @@ const Navbar = () => {
 
         {/* Logo */}
         <div className="flex flex-1 justify-start md:justify-center">
-          <Link to="/" className="font-display text-[1.6rem] italic text-foreground tracking-wide">
+          <Link to="/" className="font-display text-xl font-semibold text-foreground tracking-tight">
             DermaSense
           </Link>
         </div>
 
-        {/* Right icons */}
-        <div className="flex flex-1 items-center justify-end gap-5">
-          <div className="hidden md:flex items-center gap-2 border-b border-border pb-1 focus-within:border-primary transition-colors">
-            <Search className="h-3.5 w-3.5 text-muted-foreground" />
-            <input
-              placeholder="Search"
-              className="w-20 bg-transparent font-body text-[11px] text-foreground outline-none placeholder:text-muted-foreground/60 focus:w-32 transition-all"
-            />
-          </div>
-          <Link to="/profile" aria-label="Profile" className="text-muted-foreground hover:text-primary transition-colors">
-            <User className="h-4 w-4" />
+        {/* Right actions */}
+        <div className="flex flex-1 items-center justify-end gap-4">
+          <Link
+            to="/login"
+            className="border border-border px-4 py-2 font-body text-[11px] uppercase tracking-[0.18em] text-foreground hover:border-primary hover:text-primary transition-colors"
+          >
+            Login
           </Link>
-          <button aria-label="Cart" className="relative text-muted-foreground hover:text-primary transition-colors">
-            <ShoppingBag className="h-4 w-4" />
-          </button>
           {/* Mobile hamburger */}
           <button className="md:hidden text-muted-foreground" onClick={() => setOpen(!open)}>
             {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -75,6 +67,20 @@ const Navbar = () => {
               {label}
             </Link>
           ))}
+          <Link
+            to="/login"
+            onClick={() => setOpen(false)}
+            className="font-body text-sm font-medium uppercase tracking-widest text-primary"
+          >
+            Login
+          </Link>
+          <Link
+            to="/auth"
+            onClick={() => setOpen(false)}
+            className="font-body text-sm font-medium uppercase tracking-widest text-muted-foreground hover:text-foreground"
+          >
+            Register
+          </Link>
         </div>
       )}
     </header>

@@ -4,9 +4,9 @@ import { Link } from "react-router-dom";
 import { Leaf, FlaskConical, Sparkles, ShieldCheck } from "lucide-react";
 
 const featuredCategories = [
-  { name: "Serums",     desc: "Targeted actives",   img: "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=600&q=80" },
-  { name: "Moisturisers", desc: "Barrier support",  img: "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=600&q=80" },
-  { name: "Sunscreen",  desc: "Daily protection",   img: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=600&q=80" },
+  { name: "Skincare", desc: "Barrier health and actives", img: "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=600&q=80" },
+  { name: "Makeup", desc: "Skin-first complexion", img: "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=600&q=80" },
+  { name: "Bodycare", desc: "Daily nourishment", img: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=600&q=80" },
 ];
 
 const values = [
@@ -34,17 +34,17 @@ const Index = () => (
               <span className="inline-block font-body text-[10px] font-medium uppercase tracking-[0.35em] text-accent mb-6 bg-sage-light px-3 py-1">
                 Science-Led Skincare
               </span>
-              <h1 className="font-display text-6xl md:text-8xl italic leading-[0.9] text-foreground mb-8">
+              <h1 className="font-display text-6xl md:text-8xl leading-[0.9] text-foreground mb-8">
                 Skin that<br/>
-                <em className="not-italic text-primary">knows</em><br/>
+                <span className="text-primary">knows</span><br/>
                 itself.
               </h1>
               <p className="font-body text-sm text-muted-foreground max-w-sm leading-relaxed">
                 Advanced diagnostics and botanically-backed formulations curated to your skin's unique biology.
               </p>
               <div className="mt-10 flex flex-col sm:flex-row gap-4">
-                <Link to="/routine" className="bg-primary text-primary-foreground px-10 py-4 font-body text-[11px] font-medium uppercase tracking-widest hover:bg-primary/90 transition-all text-center">
-                  Get My Routine
+                <Link to="/skin-analysis" className="bg-primary text-primary-foreground px-10 py-4 font-body text-[11px] font-medium uppercase tracking-widest hover:bg-primary/90 transition-all text-center">
+                  Start Skin Analysis
                 </Link>
                 <Link to="/products" className="border border-primary/40 text-primary px-10 py-4 font-body text-[11px] font-medium uppercase tracking-widest hover:bg-rose-light transition-all text-center">
                   Explore Catalog
@@ -74,7 +74,7 @@ const Index = () => (
       {/* ── Category tiles ────────────────────────── */}
       <section className="border-b border-border/50 py-16">
         <div className="container mx-auto px-6">
-          <h2 className="font-display text-3xl italic text-foreground mb-10">Featured Collections</h2>
+          <h2 className="font-display text-3xl text-foreground mb-10">Featured Collections</h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {featuredCategories.map((cat) => (
               <Link
@@ -102,7 +102,7 @@ const Index = () => (
               <div className="w-10 h-10 bg-background flex items-center justify-center border border-border/50">
                 <Icon className="h-4 w-4 text-primary" />
               </div>
-              <p className="font-display text-lg italic text-foreground">{label}</p>
+              <p className="font-display text-lg text-foreground">{label}</p>
               <p className="font-body text-[10px] uppercase tracking-widest text-muted-foreground">{desc}</p>
             </div>
           ))}

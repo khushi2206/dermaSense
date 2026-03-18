@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { api } from "@/lib/api";
 import { Check } from "lucide-react";
+import { getCurrentUser, saveLocalProfile } from "@/lib/session";
 
 const skinTypeOptions = [
   { value: "Dry",         desc: "Tight, flaky or rough texture" },
@@ -35,10 +36,14 @@ const Routine = () => {
   const progress = { skin_type: 33, concern: 66, confirm: 100 }[step];
 
   const handleSubmit = async () => {
+    const user = getCurrentUser();
+    const userId = user?.id ?? 1;
+
     setLoading(true);
     try {
-      await api.post("/skin-profiles", { skinType, concern, userId: 1 });
+      await api.post("/skin-profiles", { skinType, concern, userId });
     } catch (err) {
+      saveLocalProfile({ skinType, concern, userId });
       console.error(err);
     }
     setLoading(false);

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
 import { Activity, User as UserIcon, Plus, FlaskConical } from "lucide-react";
 import { Link } from "react-router-dom";
+import { getCurrentUser, getLocalProfilesByUser, getNextLocalId } from "@/lib/session";
 
 interface SkinProfile {
   id: number;
@@ -23,11 +24,30 @@ const concernColor: Record<string, string> = {
 const Profile = () => {
   const [profiles, setProfiles] = useState<SkinProfile[]>([]);
   const [loading, setLoading]   = useState(true);
+  const user = getCurrentUser();
 
   useEffect(() => {
-    api.get("/skin-profiles/user/1")
-      .then(setProfiles)
-      .catch(console.error)
+    const userId = user?.id ?? 1;
+    const local = getLocalProfilesByUser(userId).map((p) => ({
+      id: p.id,
+      skinType: p.skinType,
+      concern: p.concern,
+    }));
+
+    api.get<SkinProfile[]>(`/skin-profiles/user/${userId}`)
+      .then((remote) => {
+        const merged = [...remote];
+        local.forEach((localProfile) => {
+          const exists = merged.some(
+            (item) => item.skinType === localProfile.skinType && item.concern === localProfile.concern
+          );
+          if (!exists) {
+            merged.unshift({ ...localProfile, id: localProfile.id ?? getNextLocalId("profile") });
+          }
+        });
+        setProfiles(merged);
+      })
+      .catch(() => setProfiles(local))
       .finally(() => setLoading(false));
   }, []);
 
@@ -45,7 +65,7 @@ const Profile = () => {
             </div>
             <div>
               <h1 className="font-display text-4xl italic text-foreground mb-1">My Profile</h1>
-              <p className="font-body text-xs text-muted-foreground uppercase tracking-widest">Diagnostics Archive</p>
+              <p className="font-body text-xs text-muted-foreground uppercase tracking-widest">{user?.fullName ?? "Guest"} • Diagnostics Archive</p>
             </div>
             <Link
               to="/routine"

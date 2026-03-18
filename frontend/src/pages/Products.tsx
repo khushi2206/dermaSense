@@ -3,34 +3,31 @@ import Footer from "@/components/Footer";
 import { useState, useEffect } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { ShoppingBag, Filter } from "lucide-react";
-
-const CATEGORIES = ["All", "Skincare", "Makeup", "Bodycare", "Fragrance"];
-
-const MOCK_PRODUCTS = [
-  { id: 1,  name: "Hyaluronic Serum",       category: "Skincare", price: 45, tag: "Best Seller", image: "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=600&q=80", description: "Triple-weight molecules for multi-depth cellular hydration." },
-  { id: 2,  name: "Vitamin C Complex",       category: "Skincare", price: 65, tag: "New",         image: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=600&q=80", description: "Bio-available radiance and dark-spot correction." },
-  { id: 3,  name: "Matte Foundation",        category: "Makeup",   price: 52, tag: "",            image: "https://images.unsplash.com/photo-1596704017254-9b121068f044?auto=format&fit=crop&w=600&q=80", description: "Invisible coverage with a skin-second-skin finish." },
-  { id: 4,  name: "Body Oil Tint",           category: "Bodycare", price: 38, tag: "",            image: "https://images.unsplash.com/photo-1608248597279-f99d160bfcbc?auto=format&fit=crop&w=600&q=80", description: "Structural luster meets deep nourishment." },
-  { id: 5,  name: "Niacinamide Toner",       category: "Skincare", price: 34, tag: "Best Seller", image: "https://images.unsplash.com/photo-1601049676869-702ea24cfd58?auto=format&fit=crop&w=600&q=80", description: "Pore refinement and barrier-restoring complex." },
-  { id: 6,  name: "Satin Lip Treatment",     category: "Makeup",   price: 22, tag: "New",         image: "https://images.unsplash.com/photo-1631730486134-c99a59e2ebea?auto=format&fit=crop&w=600&q=80", description: "Tinted moisture for defined, supple lips." },
-  { id: 7,  name: "Peptide Eye Cream",       category: "Skincare", price: 72, tag: "",            image: "https://images.unsplash.com/photo-1556228453-efd6c1ff04f6?auto=format&fit=crop&w=600&q=80", description: "Firming peptide complex for the periorbital zone." },
-  { id: 8,  name: "Rose Facial Mist",        category: "Skincare", price: 28, tag: "",            image: "https://images.unsplash.com/photo-1607748851687-ba9a10438621?auto=format&fit=crop&w=600&q=80", description: "Antioxidant hydration reset throughout the day." },
-];
+import { CATEGORIES, PRODUCTS } from "@/lib/catalog";
+import { addToCart } from "@/lib/session";
 
 const Products = () => {
   const [searchParams] = useSearchParams();
   const preSelected = searchParams.get("category") ?? "All";
+  const query = searchParams.get("q") ?? "";
+  const isCategory = (value: string): value is (typeof CATEGORIES)[number] =>
+    CATEGORIES.some((category) => category === value);
 
   const [selectedCategory, setSelectedCategory] = useState(
-    CATEGORIES.includes(preSelected) ? preSelected : "All"
+    isCategory(preSelected) ? preSelected : "All"
   );
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState(query);
   const [sortBy, setSortBy]  = useState<"default" | "low" | "high">("default");
-  useEffect(() => {
-    if (CATEGORIES.includes(preSelected)) setSelectedCategory(preSelected);
-  }, [preSelected]);
+  const [addedId, setAddedId] = useState<number | null>(null);
 
-  let filtered = MOCK_PRODUCTS
+  useEffect(() => {
+    if (isCategory(preSelected)) {
+      setSelectedCategory(preSelected);
+    }
+    setSearch(query);
+  }, [preSelected, query]);
+
+  let filtered = PRODUCTS
     .filter((p) => selectedCategory === "All" || p.category === selectedCategory)
     .filter((p) => p.name.toLowerCase().includes(search.toLowerCase()));
 
@@ -126,10 +123,17 @@ const Products = () => {
                     <div className="flex items-center justify-between mt-4 pt-4 border-t border-border/40">
                       <span className="font-body text-sm font-medium text-foreground">${product.price}</span>
                       <button
-                        onClick={(e) => { e.preventDefault(); }}
+                            onClick={(e) => {
+                              e.preventDefault();
+                              addToCart(product);
+                              setAddedId(product.id);
+                              window.dispatchEvent(new Event("cart-updated"));
+                              window.setTimeout(() => setAddedId(null), 900);
+                            }}
                         className="flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2 font-body text-[10px] uppercase tracking-widest hover:bg-primary/90 transition-all"
                       >
-                        <ShoppingBag className="h-3 w-3" /> Add
+                            <ShoppingBag className="h-3 w-3" />
+                            {addedId === product.id ? "Added" : "Add"}
                       </button>
                     </div>
                   </div>
